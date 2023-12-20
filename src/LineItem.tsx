@@ -10,9 +10,9 @@ type PropsType = {
 const LineItem = ({ item, handleCheck, handleDelete }: PropsType) => {
   return (
     <li className="item">
-      <div className="card max-w-2xl bg-base-100 shadow-xl">
+      <div className="card max-w-2xl bg-neutral shadow-xl">
         <div className="card-body">
-          <div className="card-actions justify-between flex-nowrap">
+          <div className="card-actions flex-nowrap justify-between">
             <div className="flex gap-5">
               <input
                 type="checkbox"

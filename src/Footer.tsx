@@ -5,7 +5,7 @@ type PropsType = {
 const Footer = ({ length }: PropsType) => {
   const now = new Date();
   return (
-    <footer className="footer footer-center p-4 bg-base-300 text-base-content">
+    <footer className="footer footer-center sticky bottom-0 bg-base-300 p-4 text-base-content">
       <aside>
         <p>
           {length} List {length <= 1 ? "item" : "items"}

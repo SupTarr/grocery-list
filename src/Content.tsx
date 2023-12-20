@@ -11,7 +11,7 @@ const Content = ({ items, handleCheck, handleDelete }: PropsType) => {
   return (
     <main>
       {items.length ? (
-        <ul>
+        <ul className="flex flex-col gap-5 p-5">
           {items.map((item) => (
             <LineItem
               key={item.id}

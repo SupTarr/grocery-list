@@ -80,7 +80,7 @@ const App = () => {
   return (
     <div className="app min-h-screen">
       <Header />
-      <div className="main min-h-[calc(100vh-144px)] w-fll max-w-screen-lg mx-auto">
+      <div className="main w-fll mx-auto min-h-[calc(100vh-144px)] max-w-screen-lg">
         <AddItem
           newItem={state.newItem}
           setNewItem={(v: string) =>
