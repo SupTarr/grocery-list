@@ -1,5 +1,6 @@
 import { useReducer, useEffect } from "react";
 import Header from "./Header";
+import AddItem from "./AddItem";
 import Footer from "./Footer";
 
 type Item = {
@@ -43,45 +44,52 @@ const App = () => {
       }
     },
     {
-      items: JSON.parse(localStorage.getItem("shoppinglist") || "") || [],
+      items: JSON.parse(localStorage.getItem("shoppinglist") || "[]") || [],
       newItem: "",
       search: "",
-    }
+    },
   );
 
   useEffect(() => {
-    localStorage.setItem('shoppinglist', JSON.stringify(state.items));
-  }, [state.items])
+    localStorage.setItem("shoppinglist", JSON.stringify(state.items));
+  }, [state.items]);
 
   const addItem = (name: string) => {
-    const id = state.items.length ? state.items[state.items.length - 1].id + 1 : 1;
+    const id = state.items.length
+      ? state.items[state.items.length - 1].id + 1
+      : 1;
     const myNewItem = { id, checked: false, name };
     const listItems = [...state.items, myNewItem];
-    dispatch({ type: "setItems", items: listItems })
-  }
+    dispatch({ type: "setItems", items: listItems });
+  };
 
   const handleCheck = (id: number) => {
-    const listItems = state.items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item);
-    dispatch({ type: "setItems", items: listItems })
-  }
+    const listItems = state.items.map((item) =>
+      item.id === id ? { ...item, checked: !item.checked } : item,
+    );
+    dispatch({ type: "setItems", items: listItems });
+  };
 
   const handleDelete = (id: number) => {
     const listItems = state.items.filter((item) => item.id !== id);
-    dispatch({ type: "setItems", items: listItems })
-  }
+    dispatch({ type: "setItems", items: listItems });
+  };
 
-  const handleSubmit = (e: React.FormEvent<HTMLInputElement>) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (!state.newItem) return;
     addItem(state.newItem);
-    dispatch({ type: "setNewItem", newItem: "" })
-  }
+    dispatch({ type: "setNewItem", newItem: "" });
+  };
 
   return (
     <div className="app min-h-screen">
       <Header />
+      <AddItem
+        newItem={state.newItem}
+        setNewItem={(v: string) => dispatch({ type: "setNewItem", newItem: v })}
+        handleSubmit={handleSubmit}
+      />
       <Footer />
-      <input type="text" onChange={e => e.preventDefault()} />
     </div>
   );
 };
