@@ -2,6 +2,7 @@ import { useReducer, useEffect } from "react";
 import { Item } from "./types/Item";
 import Header from "./Header";
 import AddItem from "./AddItem";
+import SearchItem from "./SearchItem";
 import Content from "./Content";
 import Footer from "./Footer";
 
@@ -87,6 +88,10 @@ const App = () => {
             dispatch({ type: "setNewItem", newItem: v })
           }
           handleSubmit={handleSubmit}
+        />
+        <SearchItem
+          search={state.search}
+          setSearch={(v: string) => dispatch({ type: "setSearch", search: v })}
         />
         <Content
           items={state.items.filter((item) =>
