@@ -43,7 +43,7 @@ const App = () => {
       items: JSON.parse(localStorage.getItem("shopping-list") || "[]") || [],
       newItem: "",
       search: "",
-    }
+    },
   );
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const App = () => {
 
   const handleCheck = (id: number) => {
     const listItems = state.items.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item
+      item.id === id ? { ...item, checked: !item.checked } : item,
     );
     dispatch({ type: "setItems", items: listItems });
   };
@@ -90,7 +90,7 @@ const App = () => {
         />
         <Content
           items={state.items.filter((item) =>
-            item.name.toLowerCase().includes(state.search.toLowerCase())
+            item.name.toLowerCase().includes(state.search.toLowerCase()),
           )}
           handleCheck={handleCheck}
           handleDelete={handleDelete}
