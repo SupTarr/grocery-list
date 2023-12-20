@@ -3,17 +3,17 @@
     {
       "id": 1,
       "checked": false,
-      "item": "Almonds"
+      "name": "Almonds"
     },
     {
       "id": 2,
       "checked": false,
-      "item": "Pizza"
+      "name": "Pizza"
     },
     {
       "id": 3,
       "checked": false,
-      "item": "Bread"
+      "name": "Bread"
     }
   ]
 }
