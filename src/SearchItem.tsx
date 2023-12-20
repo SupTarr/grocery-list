@@ -13,7 +13,7 @@ const SearchItem = ({ search, setSearch }: PropsType) => {
         Search
       </label>
       <input
-        className="max-w-[calc(21.25rem+48px)] input input-bordered mr- w-full"
+        className="input input-bordered w-full max-w-[calc(21.25rem+48px)]"
         id="search"
         type="text"
         role="searchbox"

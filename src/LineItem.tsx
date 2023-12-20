@@ -13,7 +13,7 @@ const LineItem = ({ item, handleCheck, handleDelete }: PropsType) => {
       <div className="card max-w-2xl bg-neutral shadow-xl">
         <div className="card-body p-5">
           <div className="card-actions flex-nowrap justify-between">
-            <div className="flex gap-5">
+            <div className="mt-1 flex gap-5">
               <input
                 type="checkbox"
                 onChange={() => handleCheck(item.id)}
