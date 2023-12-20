@@ -44,14 +44,14 @@ const App = () => {
       }
     },
     {
-      items: JSON.parse(localStorage.getItem("shoppinglist") || "[]") || [],
+      items: JSON.parse(localStorage.getItem("shopping-list") || "[]") || [],
       newItem: "",
       search: "",
-    }
+    },
   );
 
   useEffect(() => {
-    localStorage.setItem("shoppinglist", JSON.stringify(state.items));
+    localStorage.setItem("shopping-list", JSON.stringify(state.items));
   }, [state.items]);
 
   const addItem = (name: string) => {
@@ -65,7 +65,7 @@ const App = () => {
 
   const handleCheck = (id: number) => {
     const listItems = state.items.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item
+      item.id === id ? { ...item, checked: !item.checked } : item,
     );
     dispatch({ type: "setItems", items: listItems });
   };
@@ -84,7 +84,7 @@ const App = () => {
   return (
     <div className="app min-h-screen">
       <Header />
-      <div className="main min-h-[calc(100vh-116px)] w-fll max-w-screen-lg mx-auto">
+      <div className="main min-h-[calc(100vh-144px)] w-fll max-w-screen-lg mx-auto">
         <AddItem
           newItem={state.newItem}
           setNewItem={(v: string) =>
@@ -93,7 +93,7 @@ const App = () => {
           handleSubmit={handleSubmit}
         />
       </div>
-      <Footer />
+      <Footer length={state.items.length} />
     </div>
   );
 };
