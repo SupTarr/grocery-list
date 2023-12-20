@@ -12,7 +12,7 @@ const AddItem = ({ newItem, setNewItem, handleSubmit }: PropsType) => {
 
   return (
     <form
-      className="addForm"
+      className="addForm p-5 flex flex-nowrap"
       onSubmit={(e) => {
         e.preventDefault();
         handleSubmit();
@@ -22,7 +22,7 @@ const AddItem = ({ newItem, setNewItem, handleSubmit }: PropsType) => {
         Add Item
       </label>
       <input
-        className="input input-bordered w-full max-w-xs"
+        className="input input-bordered w-full max-w-xs mr-5"
         autoFocus
         ref={inputRef}
         id="addItem"

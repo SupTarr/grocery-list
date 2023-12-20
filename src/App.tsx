@@ -47,7 +47,7 @@ const App = () => {
       items: JSON.parse(localStorage.getItem("shoppinglist") || "[]") || [],
       newItem: "",
       search: "",
-    },
+    }
   );
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const App = () => {
 
   const handleCheck = (id: number) => {
     const listItems = state.items.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item,
+      item.id === id ? { ...item, checked: !item.checked } : item
     );
     dispatch({ type: "setItems", items: listItems });
   };
@@ -84,11 +84,15 @@ const App = () => {
   return (
     <div className="app min-h-screen">
       <Header />
-      <AddItem
-        newItem={state.newItem}
-        setNewItem={(v: string) => dispatch({ type: "setNewItem", newItem: v })}
-        handleSubmit={handleSubmit}
-      />
+      <div className="main min-h-[calc(100vh-116px)] w-fll max-w-screen-lg mx-auto">
+        <AddItem
+          newItem={state.newItem}
+          setNewItem={(v: string) =>
+            dispatch({ type: "setNewItem", newItem: v })
+          }
+          handleSubmit={handleSubmit}
+        />
+      </div>
       <Footer />
     </div>
   );
