@@ -1,30 +1,29 @@
-# React + TypeScript + Vite
+# Color PickerGrocery List
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## About The Project
 
-Currently, two official plugins are available:
+This project is part of [React JS Full Course for Beginners](https://www.youtube.com/watch?v=RVFAyFWO4go) by `Dave Gray`. and I create TODO app by using my React skills.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies
 
-## Expanding the ESLint configuration
+This project was created with:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- [ReactJS](https://react.dev)
+- [TypeScript](https://www.typescriptlang.org/)
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: ["./tsconfig.json", "./tsconfig.node.json"],
-    tsconfigRootDir: __dirname,
-  },
-};
+Clone the project
+
+```sh
+git clone https://github.com/SupTarr/grocery-list.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+In the project directory, you can run:
+
+```sh
+npm install
+npm run dev
+```
+
+The app will be run in the development mode.
