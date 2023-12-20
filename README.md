@@ -1,4 +1,4 @@
-# Color PickerGrocery List
+# Grocery List
 
 ## About The Project
 
