@@ -1,13 +1,9 @@
 import { useReducer, useEffect } from "react";
+import { Item } from "./types/Item";
 import Header from "./Header";
 import AddItem from "./AddItem";
+import Content from "./Content";
 import Footer from "./Footer";
-
-type Item = {
-  id: number;
-  checked: boolean;
-  name: string;
-};
 
 type Action =
   | { type: "setItems"; items: Item[] }
@@ -47,7 +43,7 @@ const App = () => {
       items: JSON.parse(localStorage.getItem("shopping-list") || "[]") || [],
       newItem: "",
       search: "",
-    },
+    }
   );
 
   useEffect(() => {
@@ -65,7 +61,7 @@ const App = () => {
 
   const handleCheck = (id: number) => {
     const listItems = state.items.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item,
+      item.id === id ? { ...item, checked: !item.checked } : item
     );
     dispatch({ type: "setItems", items: listItems });
   };
@@ -91,6 +87,13 @@ const App = () => {
             dispatch({ type: "setNewItem", newItem: v })
           }
           handleSubmit={handleSubmit}
+        />
+        <Content
+          items={state.items.filter((item) =>
+            item.name.toLowerCase().includes(state.search.toLowerCase())
+          )}
+          handleCheck={handleCheck}
+          handleDelete={handleDelete}
         />
       </div>
       <Footer length={state.items.length} />
