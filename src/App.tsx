@@ -5,9 +5,11 @@ import AddItem from "./AddItem";
 import SearchItem from "./SearchItem";
 import Content from "./Content";
 import Footer from "./Footer";
+import { Alert, AlertType } from "./Alert";
+import { Loading, Size } from "./Loading";
 
 type Action =
-  | { type: "setItems"; items: Item[] }
+  | { type: "setItems"; items: Item[]; loading: boolean; error: Error | null }
   | { type: "setNewItem"; newItem: string }
   | { type: "setSearch"; search: string };
 
@@ -15,6 +17,8 @@ type State = {
   items: Item[];
   newItem: string;
   search: string;
+  loading: boolean;
+  error: Error | null;
 };
 
 const App = () => {
@@ -25,6 +29,8 @@ const App = () => {
           return {
             ...state,
             items: action.items,
+            loading: action.loading,
+            error: action.error,
           };
         case "setNewItem":
           return {
@@ -41,15 +47,41 @@ const App = () => {
       }
     },
     {
-      items: JSON.parse(localStorage.getItem("shopping-list") || "[]") || [],
+      items: [],
       newItem: "",
       search: "",
+      loading: true,
+      error: null,
     },
   );
 
+  const API_URL = "http://localhost:3500";
+
   useEffect(() => {
-    localStorage.setItem("shopping-list", JSON.stringify(state.items));
-  }, [state.items]);
+    setTimeout(() => {
+      (async () => {
+        try {
+          const response = await fetch(API_URL + "/items");
+          if (!response.ok) throw new Error("Did not receive expected data");
+          const listItems = await response.json();
+          dispatch({
+            type: "setItems",
+            items: listItems,
+            loading: false,
+            error: null,
+          });
+        } catch (e) {
+          console.log(`>> error: ${(e as Error).message}`);
+          dispatch({
+            type: "setItems",
+            items: [],
+            loading: false,
+            error: e as Error,
+          });
+        }
+      })();
+    }, 2000);
+  }, []); 
 
   const addItem = (name: string) => {
     const id = state.items.length
@@ -57,19 +89,34 @@ const App = () => {
       : 1;
     const myNewItem = { id, checked: false, name };
     const listItems = [...state.items, myNewItem];
-    dispatch({ type: "setItems", items: listItems });
+    dispatch({
+      type: "setItems",
+      items: listItems,
+      loading: false,
+      error: null,
+    });
   };
 
   const handleCheck = (id: number) => {
     const listItems = state.items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item,
     );
-    dispatch({ type: "setItems", items: listItems });
+    dispatch({
+      type: "setItems",
+      items: listItems,
+      loading: false,
+      error: null,
+    });
   };
 
   const handleDelete = (id: number) => {
     const listItems = state.items.filter((item) => item.id !== id);
-    dispatch({ type: "setItems", items: listItems });
+    dispatch({
+      type: "setItems",
+      items: listItems,
+      loading: false,
+      error: null,
+    });
   };
 
   const handleSubmit = () => {
@@ -81,7 +128,7 @@ const App = () => {
   return (
     <div className="app min-h-screen">
       <Header />
-      <div className="main w-fll mx-auto min-h-[calc(100vh-144px)] max-w-screen-lg">
+      <div className="main mx-auto min-h-[calc(100vh-144px)] w-full max-w-screen-lg">
         <AddItem
           newItem={state.newItem}
           setNewItem={(v: string) =>
@@ -93,13 +140,23 @@ const App = () => {
           search={state.search}
           setSearch={(v: string) => dispatch({ type: "setSearch", search: v })}
         />
-        <Content
-          items={state.items.filter((item) =>
-            item.name.toLowerCase().includes(state.search.toLowerCase()),
-          )}
-          handleCheck={handleCheck}
-          handleDelete={handleDelete}
-        />
+        {state.loading && (
+          <section className="flex flex-col flex-wrap content-center justify-center">
+            <Loading size={Size.Large} />
+          </section>
+        )}
+        {state.error != null && (
+          <Alert type={AlertType.Error} message={state.error.message} />
+        )}
+        {state.error == null && !state.loading && (
+          <Content
+            items={state.items.filter((item) =>
+              item.name.toLowerCase().includes(state.search.toLowerCase()),
+            )}
+            handleCheck={handleCheck}
+            handleDelete={handleDelete}
+          />
+        )}
       </div>
       <Footer length={state.items.length} />
     </div>

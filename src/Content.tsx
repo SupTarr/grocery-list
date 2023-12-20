@@ -1,5 +1,6 @@
 import { Item } from "./types/Item";
 import LineItem from "./LineItem";
+import { Alert, AlertType } from "./Alert";
 
 type PropsType = {
   items: Item[];
@@ -22,7 +23,7 @@ const Content = ({ items, handleCheck, handleDelete }: PropsType) => {
           ))}
         </ul>
       ) : (
-        <p style={{ marginTop: "2rem" }}>Your list is empty.</p>
+        <Alert type={AlertType.Info} message="Your list is empty." />
       )}
     </main>
   );
