@@ -7,6 +7,7 @@ import Content from "./Content";
 import Footer from "./Footer";
 import { Alert, AlertType } from "./Alert";
 import { Loading, Size } from "./Loading";
+import Api from "./Api";
 
 type Action =
   | { type: "setItems"; items: Item[]; loading: boolean; error: Error | null }
@@ -81,9 +82,9 @@ const App = () => {
         }
       })();
     }, 2000);
-  }, []); 
+  }, []);
 
-  const addItem = (name: string) => {
+  const addItem = async (name: string) => {
     const id = state.items.length
       ? state.items[state.items.length - 1].id + 1
       : 1;
@@ -95,9 +96,25 @@ const App = () => {
       loading: false,
       error: null,
     });
+
+    const postOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(myNewItem),
+    };
+    const result = await Api(API_URL + "/items/", postOptions);
+    if (result)
+      dispatch({
+        type: "setItems",
+        items: state.items,
+        loading: false,
+        error: new Error(result),
+      });
   };
 
-  const handleCheck = (id: number) => {
+  const handleCheck = async (id: number) => {
     const listItems = state.items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item,
     );
@@ -107,9 +124,26 @@ const App = () => {
       loading: false,
       error: null,
     });
+
+    const myItem = listItems.filter((item) => item.id === id);
+    const updateOptions = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ checked: myItem[0].checked }),
+    };
+    const result = await Api(API_URL + `/items/${id}`, updateOptions);
+    if (result)
+      dispatch({
+        type: "setItems",
+        items: state.items,
+        loading: false,
+        error: new Error(result),
+      });
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     const listItems = state.items.filter((item) => item.id !== id);
     dispatch({
       type: "setItems",
@@ -117,6 +151,18 @@ const App = () => {
       loading: false,
       error: null,
     });
+
+    const deleteOptions = {
+      method: "DELETE",
+    };
+    const result = await Api(API_URL + `/items/${id}`, deleteOptions);
+    if (result)
+      dispatch({
+        type: "setItems",
+        items: state.items,
+        loading: false,
+        error: new Error(result),
+      });
   };
 
   const handleSubmit = () => {
