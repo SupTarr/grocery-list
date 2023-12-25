@@ -28,7 +28,9 @@ const sizeToString = (size: Size): string => {
 
 const Loading = ({ size = Size.ExSmall }: PropsType) => {
   return (
-    <span className={`loading loading-spinner ${sizeToString(size)} `}></span>
+    <section className="flex flex-col flex-wrap content-center justify-center">
+      <span className={`loading loading-spinner ${sizeToString(size)} `}></span>
+    </section>
   );
 };
 

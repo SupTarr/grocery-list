@@ -186,11 +186,7 @@ const App = () => {
           search={state.search}
           setSearch={(v: string) => dispatch({ type: "setSearch", search: v })}
         />
-        {state.loading && (
-          <section className="flex flex-col flex-wrap content-center justify-center">
-            <Loading size={Size.Large} />
-          </section>
-        )}
+        {state.loading && <Loading size={Size.Large} />}
         {state.error != null && (
           <Alert type={AlertType.Error} message={state.error.message} />
         )}
