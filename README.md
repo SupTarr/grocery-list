@@ -2,7 +2,7 @@
 
 ## About The Project
 
-This project is part of [React JS Full Course for Beginners](https://www.youtube.com/watch?v=RVFAyFWO4go) by `Dave Gray`. and I create TODO app by using my React skills.
+This project is part of [React JS Full Course for Beginners](https://www.youtube.com/watch?v=RVFAyFWO4go) by `Dave Gray`. and I use my React skills to create a TODO app to track my grocery list.
 
 ## Technologies
 
