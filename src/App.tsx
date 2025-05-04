@@ -5,22 +5,27 @@ import AddItem from "./AddItem";
 import SearchItem from "./SearchItem";
 import Content from "./Content";
 import Footer from "./Footer";
-import { Alert, AlertType } from "./Alert";
 import { Loading, Size } from "./Loading";
-import Api from "./Api";
 
 type Action =
-  | { type: "setItems"; items: Item[]; loading: boolean; error: Error | null }
+  | { type: "setItems"; items: Item[] }
   | { type: "setNewItem"; newItem: string }
-  | { type: "setSearch"; search: string };
+  | { type: "setSearch"; search: string }
+  | { type: "setLoading"; isLoading: boolean };
 
 type State = {
   items: Item[];
   newItem: string;
   search: string;
-  loading: boolean;
-  error: Error | null;
+  isLoading: boolean;
 };
+
+const STORAGE_KEY = "groceryList";
+const defaultItems: Item[] = [
+  { id: 1, checked: false, name: "Almonds" },
+  { id: 2, checked: false, name: "Pizza" },
+  { id: 3, checked: false, name: "Bread" },
+];
 
 const App = () => {
   const [state, dispatch] = useReducer(
@@ -30,8 +35,6 @@ const App = () => {
           return {
             ...state,
             items: action.items,
-            loading: action.loading,
-            error: action.error,
           };
         case "setNewItem":
           return {
@@ -43,6 +46,11 @@ const App = () => {
             ...state,
             search: action.search,
           };
+        case "setLoading":
+          return {
+            ...state,
+            isLoading: action.isLoading,
+          };
         default:
           return state;
       }
@@ -51,130 +59,72 @@ const App = () => {
       items: [],
       newItem: "",
       search: "",
-      loading: true,
-      error: null,
+      isLoading: true,
     },
   );
 
-  const API_URL = "http://localhost:3500";
-
   useEffect(() => {
-    setTimeout(() => {
-      (async () => {
-        try {
-          const response = await fetch(API_URL + "/items");
-          if (!response.ok) throw new Error("Did not receive expected data");
-          const listItems = await response.json();
-          dispatch({
-            type: "setItems",
-            items: listItems,
-            loading: false,
-            error: null,
-          });
-        } catch (e) {
-          console.log(`>> error: ${(e as Error).message}`);
-          dispatch({
-            type: "setItems",
-            items: [],
-            loading: false,
-            error: e as Error,
-          });
-        }
-      })();
-    }, 2000);
+    try {
+      const storedItems = localStorage.getItem(STORAGE_KEY);
+      const initialItems = storedItems ? JSON.parse(storedItems) : defaultItems;
+      dispatch({ type: "setItems", items: initialItems });
+    } catch (error) {
+      console.error("Failed to load items from localStorage:", error);
+      dispatch({ type: "setItems", items: defaultItems });
+    } finally {
+      setTimeout(() => {
+        dispatch({ type: "setLoading", isLoading: false });
+      }, 1000);
+    }
   }, []);
 
-  const addItem = async (name: string) => {
+  useEffect(() => {
+    if (state.items.length > 0 || localStorage.getItem(STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+    }
+
+    setTimeout(() => {
+      dispatch({ type: "setLoading", isLoading: false });
+    }, 1000);
+  }, [state.items]);
+
+  const addItem = (name: string) => {
     const id = state.items.length
-      ? state.items[state.items.length - 1].id + 1
+      ? Math.max(...state.items.map((item) => item.id)) + 1
       : 1;
     const myNewItem = { id, checked: false, name };
     const listItems = [...state.items, myNewItem];
-    dispatch({
-      type: "setItems",
-      items: listItems,
-      loading: false,
-      error: null,
-    });
-
-    const postOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(myNewItem),
-    };
-    const result = await Api(API_URL + "/items/", postOptions);
-    if (result)
-      dispatch({
-        type: "setItems",
-        items: state.items,
-        loading: false,
-        error: new Error(result),
-      });
+    dispatch({ type: "setItems", items: listItems });
+    dispatch({ type: "setLoading", isLoading: true });
   };
 
-  const handleCheck = async (id: number) => {
+  const handleCheck = (id: number) => {
     const listItems = state.items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item,
     );
-    dispatch({
-      type: "setItems",
-      items: listItems,
-      loading: false,
-      error: null,
-    });
 
-    const myItem = listItems.filter((item) => item.id === id);
-    const updateOptions = {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ checked: myItem[0].checked }),
-    };
-    const result = await Api(API_URL + `/items/${id}`, updateOptions);
-    if (result)
-      dispatch({
-        type: "setItems",
-        items: state.items,
-        loading: false,
-        error: new Error(result),
-      });
+    dispatch({ type: "setItems", items: listItems });
+    dispatch({ type: "setLoading", isLoading: true });
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = (id: number) => {
     const listItems = state.items.filter((item) => item.id !== id);
-    dispatch({
-      type: "setItems",
-      items: listItems,
-      loading: false,
-      error: null,
-    });
-
-    const deleteOptions = {
-      method: "DELETE",
-    };
-    const result = await Api(API_URL + `/items/${id}`, deleteOptions);
-    if (result)
-      dispatch({
-        type: "setItems",
-        items: state.items,
-        loading: false,
-        error: new Error(result),
-      });
+    dispatch({ type: "setItems", items: listItems });
+    dispatch({ type: "setLoading", isLoading: true });
   };
 
   const handleSubmit = () => {
     if (!state.newItem) return;
     addItem(state.newItem);
     dispatch({ type: "setNewItem", newItem: "" });
+    dispatch({ type: "setLoading", isLoading: true });
   };
 
   return (
     <div className="app min-h-screen">
       <Header />
       <div className="main mx-auto min-h-[calc(100vh-144px)] w-full max-w-screen-lg">
+        {state.isLoading && <Loading size={Size.Large} />}
         <AddItem
           newItem={state.newItem}
           setNewItem={(v: string) =>
@@ -186,11 +136,7 @@ const App = () => {
           search={state.search}
           setSearch={(v: string) => dispatch({ type: "setSearch", search: v })}
         />
-        {state.loading && <Loading size={Size.Large} />}
-        {state.error != null && (
-          <Alert type={AlertType.Error} message={state.error.message} />
-        )}
-        {state.error == null && !state.loading && (
+        {!state.isLoading && (
           <Content
             items={state.items.filter((item) =>
               item.name.toLowerCase().includes(state.search.toLowerCase()),
